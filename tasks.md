@@ -15,14 +15,25 @@ You can try out the `GET /api/pets`, `POST /api/pets` endpoints.
 Answer the following questions:
 
 - Which architecture is applied in this repo?
+Layered
 - What kind of elements/components can you identify?
+Controller, Repository, Service
 - Where is the entry point of the repo?
+server.ts to app.ts
 - What is the scope of the repositories?
+handles owner and pet related data, communication to db
 - What is the scope of the services?
+handles owner and pet related methods, business logic
 - What is happening in the controllers?
+Handles the API calls, calls the service methods, provides an interface to the world
 - Why do we use the `DbClient` type in the pet repository?
+Dependency inversion from solid, provides an abstraction
 - What would you improve in this codebase?
+Add error handling (try catch), app.ts has too many responsibilities (type Dependencies =),
+move connection string from db string and server port to environment or somewhere else,
+
 - How does the code handle the `async` route handlers?
+with an await?
 
 ### Background material
 

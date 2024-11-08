@@ -1,12 +1,16 @@
 import {Pool} from 'pg';
 
+
 export type DbClient = {
   query: <RowType>(query: string, params?: any[]) => Promise<RowType[] | RowType>;
 }
 
-export function createPgClient(): DbClient {
+type PgClientOptions = {
+  connectionString: string
+}
+export function createPgClient({connectionString} :PgClientOptions): DbClient {
   const pool = new Pool({
-    connectionString: 'postgres://postgres:dbpassword@localhost:5400/pets'
+    connectionString: connectionString
   });
   return {
     async query(sql: string, params?: any[]) {
