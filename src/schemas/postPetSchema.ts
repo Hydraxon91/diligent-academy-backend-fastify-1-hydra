@@ -8,5 +8,5 @@ export const postPetSchemaTs = {
         },
         required: ['name', 'age', 'weightInKg'],
         additionalProperties: false
-    } as const,
+    }
 } as const
