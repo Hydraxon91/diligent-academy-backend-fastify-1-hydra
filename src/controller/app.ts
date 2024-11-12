@@ -1,10 +1,12 @@
 import fastify from 'fastify';
-import postPestSchema from '../schemas/postPetSchema.json'
-import getPetSchema from '../schemas/getPetSchema.json'
 import { postPetSchemaTs } from '../schemas/postPetSchema';
 import { getPetsSchemaTs } from '../schemas/getPetsSchema';
+import { postOwnerSchema } from '../schemas/postOwnerSchema';
+import { getOwnerSchema } from '../schemas/getOwnerSchema';
 import { PetService } from '../service/pet.service';
 import { PetRepository } from '../repository/pet.repository';
+import { OwnerService } from '../service/owner.service';
+import { OwnerRepository } from '../repository/owner.repository';
 import { DbClient } from '../db';
 import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
 
@@ -17,6 +19,9 @@ export default function createApp(options = {}, dependencies: Dependencies) {
 
   const petRepository = new PetRepository(dbClient);
   const petService = new PetService(petRepository);
+
+  const ownerRepository = new OwnerRepository(dbClient);
+  const ownerService = new OwnerService(ownerRepository);
   
   // const app = fastify(options);
   const app = fastify(options).withTypeProvider<JsonSchemaToTsProvider>();
@@ -53,10 +58,26 @@ export default function createApp(options = {}, dependencies: Dependencies) {
   app.post('/api/pets',{
     schema: postPetSchemaTs
   }, async (request, reply) => {
-    const { body: petToCreate } = request
+    const { body: petToCreate } = request;
     const created = await petService.create(petToCreate);
     reply.status(201);
     return created;
+  })
+
+  app.get('/api/owners', {schema: {response: {200: getOwnerSchema}}}, async () => {
+    const owners = await ownerService.getAll();
+    return owners;
+  })
+
+  app.post('/api/owners',
+    {
+      schema: postOwnerSchema
+    },
+    async (request, reply) => {
+      const {body: ownerToCreate} = request;
+      const created = await ownerService.create(ownerToCreate);
+      reply.status(201);
+      return created;
   })
 
   return app;
