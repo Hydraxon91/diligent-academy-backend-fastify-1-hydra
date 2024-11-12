@@ -16,7 +16,7 @@ private readonly client;
     }
 
     async read({ limit, offset } : {limit?: number, offset?: number} = {}) {
-        const sql = 'SELECT id, name, age FROM owner LIMIT $1 OFFSET $2;'
+        const sql = 'SELECT id, name, age FROM pet_owner LIMIT $1 OFFSET $2;'
         const rows = await this.client.query(sql, [limit, offset]) as Array<unknown>;
         return rows.map(this.toEntity)
     }
@@ -24,7 +24,7 @@ private readonly client;
     async create(owner: OwnerToCreate) {
         const {name, age} = owner;
         const sql = `
-          INSERT INTO owner (name, age) VALUES 
+          INSERT INTO pet_owner (name, age) VALUES 
             ($1, $2) 
           RETURNING *
         `
