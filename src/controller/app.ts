@@ -3,10 +3,14 @@ import { postPetSchemaTs } from '../schemas/postPetSchema';
 import { getPetsSchemaTs } from '../schemas/getPetsSchema';
 import { postOwnerSchema } from '../schemas/postOwnerSchema';
 import { getOwnerSchema } from '../schemas/getOwnerSchema';
+import { getKindsSchema } from '../schemas/getKindsSchema';
+import { postKindsSchema } from '../schemas/postKindsSchema';
 import { PetService } from '../service/pet.service';
 import { PetRepository } from '../repository/pet.repository';
 import { OwnerService } from '../service/owner.service';
 import { OwnerRepository } from '../repository/owner.repository';
+import { KindService } from '../service/pet_kind.service';
+import { KindRepository } from '../repository/pet_kind.repository';
 import { DbClient } from '../db';
 import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
 
@@ -22,6 +26,10 @@ export default function createApp(options = {}, dependencies: Dependencies) {
 
   const ownerRepository = new OwnerRepository(dbClient);
   const ownerService = new OwnerService(ownerRepository);
+
+  const kindRepository = new KindRepository(dbClient);
+  const kindService = new KindService(kindRepository);
+
   
   // const app = fastify(options);
   const app = fastify(options).withTypeProvider<JsonSchemaToTsProvider>();
@@ -78,6 +86,11 @@ export default function createApp(options = {}, dependencies: Dependencies) {
       const created = await ownerService.create(ownerToCreate);
       reply.status(201);
       return created;
+  })
+
+  app.get('/api/kinds', {schema: {response: {200: getKindsSchema}}}, async () => {
+    const owners = await kindService.getAll();
+    return owners;
   })
 
   return app;

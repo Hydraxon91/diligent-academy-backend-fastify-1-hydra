@@ -9,4 +9,12 @@ GET {{host}}/api/pets
 POST {{host}}/api/pets
 Content-Type: application/json
 
-{"name": "Fluffy", "age": 5, "weightInKg": 7}
+{"name": "Fluffy", "age": 5, "weightInKg": 7, "kindId": 4}
+
+###
+
+GET {{host}}/api/kinds
+
+###
+
+GET {{host}}/api/owners
