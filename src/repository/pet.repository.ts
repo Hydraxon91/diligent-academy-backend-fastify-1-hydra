@@ -38,13 +38,13 @@ export class PetRepository {
   }
 
   async create(pet: PetToCreate) {
-    const {name, age, weightInKg, kind_id} = pet;
+    const {name, age, weightInKg, kindId} = pet;
     const sql = `
       INSERT INTO pet (name, age, weight_in_kg, kind_id) VALUES 
-        ($1, $2, $3) 
+        ($1, $2, $3, $4) 
       RETURNING *
     `
-    const rows  = await this.client.query(sql, [name, age, weightInKg]) as Array<unknown>
+    const rows  = await this.client.query(sql, [name, age, weightInKg, kindId]) as Array<unknown>
     return rows.map(this.toEntity)[0]
   }
 }
