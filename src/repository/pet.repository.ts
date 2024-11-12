@@ -39,6 +39,14 @@ export class PetRepository {
 
   async create(pet: PetToCreate) {
     const {name, age, weightInKg, kindId} = pet;
+
+    const checkKindSql = `SELECT 1 FROM pet_kind WHERE id = $1 LIMIT 1;`;
+    const kindExists = await this.client.query(checkKindSql, [kindId]) as Array<{ 1: number }>;
+    
+    if (kindExists.length === 0) {
+      throw new Error(`Pet kind with id ${kindId} does not exist.`);
+    }
+
     const sql = `
       INSERT INTO pet (name, age, weight_in_kg, kind_id) VALUES 
         ($1, $2, $3, $4) 

@@ -66,10 +66,16 @@ export default function createApp(options = {}, dependencies: Dependencies) {
   app.post('/api/pets',{
     schema: postPetSchemaTs
   }, async (request, reply) => {
-    const { body: petToCreate } = request;
-    const created = await petService.create(petToCreate);
-    reply.status(201);
-    return created;
+    try {
+      const created = await petService.create(request.body);
+      reply.status(201).send(created);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        reply.status(400).send({ error: error.message });
+      } else {
+        reply.status(500).send({ error: 'An unexpected error occurred' });
+      }
+    }
   })
 
   app.get('/api/owners', {schema: {response: {200: getOwnerSchema}}}, async () => {
@@ -82,8 +88,7 @@ export default function createApp(options = {}, dependencies: Dependencies) {
       schema: postOwnerSchema
     },
     async (request, reply) => {
-      const {body: ownerToCreate} = request;
-      const created = await ownerService.create(ownerToCreate);
+      const created = await ownerService.create(request.body);
       reply.status(201);
       return created;
   })
